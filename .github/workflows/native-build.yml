@@ -1,0 +1,55 @@
+name: GraalVM Native Build on Debian 12
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on any tag starting with 'v', like v1.0, v2.1.3
+
+jobs:
+  build-debian:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    # Run all steps inside the official Debian 12 container
+    container:
+      image: debian:trixie-slim
+
+    steps:
+      # 1. Prepare the container (slim images are very bare)
+      - name: Install System Prerequisites
+        run: |
+          apt-get update
+          apt-get install -y curl git build-essential zlib1g-dev libfreetype6-dev
+
+      # 2. Check out the code
+      - uses: actions/checkout@v4
+
+      # 3. Setup GraalVM (This works inside the container)
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '25'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 4. Build the binary
+      - name: Build Native Binary
+        run: ./gradlew nativeCompile
+
+      # 5. Upload the executable
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-app-debian-12
+          path: app/build/native/nativeCompile/*
+
+      - name: Create GitHub Release and Upload Binary
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          # Use the correct path to your binary from the build log
+          files: app/build/native/nativeCompile/*
+          # (Optional) Provide a body for the release
+          body: "Native binary for Debian 13.2"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
