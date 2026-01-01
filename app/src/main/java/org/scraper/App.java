@@ -18,9 +18,6 @@ public class App {
             System.out.println(mainPage.title());
             
             BookAnnouncementsPage bookAnnouncementsPage = mainPage.clickBookAnnouncements();
-            //System.out.println(bookAnnouncementsPage.title());
-            System.out.println(bookAnnouncementsPage.url());
-            System.out.println(mainPage.url());
             mainPage.close();
 
             BlogPost featuredBlogPost = bookAnnouncementsPage.featuredBlogPost();

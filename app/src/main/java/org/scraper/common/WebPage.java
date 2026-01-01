@@ -23,15 +23,11 @@ public abstract class WebPage {
     }
 
     public void screenshot() throws IOException {
-        File file = new File(this.getClass().getName() + ".png");
+        File file = new File(this.getClass().getSimpleName() + ".png");
         Files.write(Objects.requireNonNull(page.screenshot()), file);
     }
 
     public void close() {
-        // In App.main, before you do anything:
-        page.context().onClose(ctx -> {
-            System.out.println("!!! WARNING: The BrowserContext just closed! !!!");
-        });
         page.close();
     }
 }
