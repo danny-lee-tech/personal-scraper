@@ -10,6 +10,7 @@ import org.scraper.com.fairyloot.community.page.BlogPage;
 import org.scraper.com.fairyloot.community.page.BookAnnouncementsPage;
 import org.scraper.com.fairyloot.community.page.MainPage;
 import org.scraper.com.fairyloot.community.page.BookAnnouncementsPage.BlogPost;
+import org.scraper.common.GeminiService;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -31,9 +32,10 @@ public class App {
             }
 
             BlogPage blogPost = archivedBlogPosts.get(0).navigate();
-            System.out.println(blogPost.title());
-            System.out.println(blogPost.content());
-            blogPost.screenshot();
+
+            GeminiService geminiService = new GeminiService();
+            String summary = geminiService.summarize(blogPost.content());
+            System.out.println(summary);
         }
 
         System.exit(0);

@@ -21,6 +21,7 @@ dependencies {
     // This dependency is used by the application.
     implementation(libs.guava)
     implementation(libs.playwright)
+    implementation("com.google.genai:google-genai:1.32.0")
 }
 
 testing {
